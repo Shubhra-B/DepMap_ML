@@ -35,5 +35,3 @@ TPM_cohesin_components<-column_to_rownames(TPM_cohesin_components,"X_RNA")
 
 tpm_violin<-ggplot(df_TPM_cohesin_components, aes(gene, TPM)) + geom_violin()
 
-############plot the distribution of expression of each gene as selected above####################
-
