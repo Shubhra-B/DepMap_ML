@@ -16,22 +16,29 @@ tpm=read.csv("OmicsExpressionProteinCodingGenesTPMLogp1.csv",header=T)
 somatic_mut=read.csv("OmicsSomaticMutations.csv",header=T) 
 colnames(tpm)=sub("\\..*","",colnames(tpm))
 
+tpm=read.csv("/home/sbhattacharya/Documents/7.DepMap/OmicsExpressionProteinCodingGenesTPMLogp1.csv",header=T)
+somatic_mut=read.csv("/home/sbhattacharya/Documents/7.DepMap/OmicsSomaticMutations.csv",header=T) 
+colnames(tpm)=sub("\\..*","",colnames(tpm))
+tpm<-column_to_rownames(tpm,"X")
 
-############Funciton that takes gene names and filters only tpm of the user defined genes####################
+############Function that takes gene names and filters only tpm of the user defined genes####################
 
-genes_of_interest=c("X","STAG1","STAG2","RAD21","SMC1A","SMC3","WAPL","PDS5A","PDS5B") #change here
+genes_of_interest=c("STAG1","STAG2","RAD21","SMC1A","SMC3","WAPL","PDS5A","PDS5B") #change here
 
 tpm_selection <- function(df, genes) {
 tpm1=tpm[,colnames(df) %in% genes, ]
-colname_tpm1 <- paste0(colnames(tpm1), "_RNA")
-colnames(tpm1)<-colname_tpm1
 return(tpm1)
  }
 
 #example usage
 TPM_cohesin_components <- tpm_selection(tpm, genes_of_interest)
-TPM_cohesin_components<-column_to_rownames(TPM_cohesin_components,"X_RNA")
 
-
-tpm_violin<-ggplot(df_TPM_cohesin_components, aes(gene, TPM)) + geom_violin()
-
+func_violin_dist <- function(df) {
+  df <- rownames_to_column(df, "CellID")
+  df <- df %>%
+  pivot_longer(!CellID, names_to = "Genes", values_to = "TPM")
+  violin <- ggplot(df, aes(Genes, TPM, fill = Genes)) + 
+  geom_violin()
+  return(violin)
+}
+func_violin_dist(TPM_cohesin_components)
