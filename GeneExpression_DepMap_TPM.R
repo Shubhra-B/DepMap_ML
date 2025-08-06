@@ -33,6 +33,8 @@ return(tpm1)
 #example usage
 TPM_cohesin_components <- tpm_selection(tpm, genes_of_interest)
 
+############Function that takes dataframe from above function and plots its function####################
+
 func_violin_dist <- function(df) {
   df <- rownames_to_column(df, "CellID")
   df <- df %>%
