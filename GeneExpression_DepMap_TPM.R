@@ -17,7 +17,7 @@ somatic_mut=read.csv("OmicsSomaticMutations.csv",header=T)
 colnames(tpm)=sub("\\..*","",colnames(tpm))
 
 
-############Funciton that takes gene names and filter only tpm of the user defined genes####################
+############Funciton that takes gene names and filters only tpm of the user defined genes####################
 
 genes_of_interest=c("X","STAG1","STAG2","RAD21","SMC1A","SMC3","WAPL","PDS5A","PDS5B") #change here
 
