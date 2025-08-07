@@ -1,0 +1,3 @@
+Precautions:
+1. Make sure that you are aware of the build of genome you are working with.
+2. Make sure to have all the packages installed prior to run.
