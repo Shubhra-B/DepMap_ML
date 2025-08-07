@@ -66,4 +66,59 @@ plot_mutations <- function(gene_name, df,chromosome, output_dir = ".") {
 #example usage
 plot_mutations("STAG2", STAG2_damaging, "chrX")
 
+##########If you would like to see 
+#1. Which are the lineage of cancer cell lines carrying these damaging mutation in your gene of interest
+#2. What percentage of cell lines from your lineage of interest  
+#3. Within your gene of interest and lineage of interest what are the disease which are being modelled.
+
+
+plot_lineage_damaging_percentage <- function(mutation_df, model_path = "../Model.csv", lineage_of_interest) {
+mut_IDs <- unique(mutation_df$ModelID)
+model_cleaned <- read.csv(model_path, header = TRUE) %>%
+select(ModelID, OncotreeLineage, OncotreePrimaryDisease)
+
+summary_merged <- model_cleaned %>%
+mutate(damaging = ModelID %in% mut_IDs) %>%
+group_by(OncotreeLineage) %>%
+                          summarise(
+                          Cell_line_with_damaging = sum(damaging),
+                          Total_number_of_celllines_in_Lineage = n(),
+                          .groups = "drop") %>%
+
+mutate(percentage_with_damaging = 100 * Cell_line_with_damaging / Total_number_of_celllines_in_Lineage)
+  
+p <- ggplot(summary_merged, aes(x = reorder(OncotreeLineage, -percentage_with_damaging), y = percentage_with_damaging)) +
+geom_col() +
+theme_classic() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    geom_text(aes(label = Total_number_of_celllines_in_Lineage), vjust = -0.25)
+  
+    print(p)
+    lineage_disease_counts <- model_cleaned %>%
+    filter(OncotreeLineage == lineage_of_interest) %>%
+    count(OncotreePrimaryDisease)
+  
+    # Plot disease counts for the lineage_of_interest
+    p_disease <- ggplot(lineage_disease_counts, aes(x = OncotreePrimaryDisease, y = n)) +
+    theme_classic() +
+    geom_col() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(title = paste("Distribution of OncotreePrimaryDisease in", lineage_of_interest),
+         x = "Oncotree Primary Disease",
+         y = "Count")
+  
+  print(p_disease)
+  
+  return(list(
+    summary = summary_merged,
+    damaging_plot = p,
+    lineage_disease_counts = lineage_disease_counts,
+    disease_distribution_plot = p_disease
+  ))
+}
+#this give us all the cellines with STAG2 mutations in myeloid lineage and disease which are present in the cell lines of lineage of interest
+result <- plot_lineage_damaging_percentage(STAG2_damaging, lineage_of_interest = "Myeloid")
+result$damaging_plot         # damaging mutation percentage plot
+result$disease_distribution_plot  # OncotreePrimaryDisease plot
+
 
