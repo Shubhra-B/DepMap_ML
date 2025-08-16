@@ -10,5 +10,6 @@ Here, there are functions which can be readily used  irectly on rawdata allowing
 **Filter_visualise_mutations.R** : Filter mutations in specific cell lines based on predicted damaging effect and plot on lollipop plot.
 
 **calculate_rotations_pca.R** : Perform PCA for specific group of cell lines with specific mutations (you may use the scripts above/or any other criteria) and shortlist 50 top genes                                     which are contributing to the variability of PC1 and PC2.
+                                Plots PCA plot as well.
 
 
